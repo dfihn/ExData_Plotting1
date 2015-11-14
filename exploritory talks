@@ -1,0 +1,128 @@
+principles of analytic graphics
+evidence = relative
+box plots
+
+1. show comparison
+2. show causality
+3. show multivariate data
+4. Integrate evidence (words,numbers, images, diagrams, try to put lots of info on your plots!!)
+5. describe and document the evidence
+6. Content is king (what is the content, what is the best way to present it?)
+
+exploratory graphs:
+-made quickly, personal understanding
+
+pollution <- read.csv("data/avgpm25.csv", colClasses = c("numeric", "character","factor","numeric","numberic"))
+head(pollution)
+
+summaries of data: 5 number summary, boxplots, histograms, density plot, barplot
+
+1. summary = summary(), summary (pollution$pm25)
+2. boxplot = boxplot(), boxplot (pollution$pm25, col = "blue")
+3 histogram = hist(), hist(polluion$pm25, col = "green")
+#you can change the breaks in a histogram
+hist(), hist(polluion$pm25, col = "green", breaks)
+rug(pollution$pm25) (shows where the data is concentrated at!!)
+or a abline()
+abline(h = 12)
+
+graphing part 2: two dimensional summaries
+multiple/overlayed (ggplot2)
+spinning plots
+coplots
+
+-"~" (tilde) used to separate parts of a model
+boxplot(pm25 ~ region, data = pollution, col = "red")
+par(mfrow = c(2,1), mar = c(4,4,2,1))
+
+with(subset(pollution, region == "west"), plot(latitude, pm25, main = "west"))
+with(subset(pollution, region == "east"), plot(latitude, pm25, main = "east"))
+#/////////////////////////////
+Core plotting systems in R!!!
+1. Bas Plotting System: artist palette model, use annotation functions (text,lines,points, axis); start with the plot function
+-an increasing process, hard to add to another plot
+
+2. Lattice System (comes from single function call) (xyplot,bwplot,etc.); ex. see how y changes across z, panel plots, can not add to a plot once it is done
+
+library(lattice)
+state <- data.frame(state.x77, region = state.region)
+xyplot(Life.Exp ~ Income | region, data = state, layout = c(4,1))
+
+3. ggplot2 system: splits diff bet base and lattice
+-can add things one by one
+
+library(ggplot2)
+data(mpg)
+qplot(displ, hwy, data = mpg)
+
+'////////////////////////////////////////
+
+Base Plotting System in R: uses plot, hist, boxplot
+Lattice(uses lattice and grid packages)
+-do you need to resize it?
+
+base graphics(two dimensional)
+1. Initatize
+2. annotate a plot
+
+library(datasets)
+hist(airquality)
+
+With(airquality$Ozone, plot(....))
+or
+airquality <- transform(airquality, Month = faactor(Month))
+boxplot(Ozone)
+
+plotting functions with base: 
+1. pch(); dot, or other method to plot
+2. lty()
+3. lwd()
+4. col(), plotting color; use color() to get color by name
+5. xlab() string for x
+6. ylab() string for y
+
+important base graphic terms
+1. las = orientation
+2. bg = background color
+3. mar = margin
+4. oma = outer margin
+5. mfrow = # of polots per row (plots filled row wise)
+6. mfcol = # of polots per row (plots filled column wise)
+
+#par(): this can be used to determine defautl global value
+
+plot functions
+1. plot()
+2. lines() adds lines to plot
+3. points() add points to plot (different group or subset)
+4. text(): add labels to the plot
+5. mtext(): add texts to margins of the plot
+6. title(): adds title to plot
+
+library(datasets)
+with(airquality,plot(Wind, Ozone))
+title(main = "Ozone and Wind Quality")
+#can also add main directly into with statement
+with(airquality, plot(Ozone, Wind, main = "Ozone and Wind Quality"))
+
+with(subset(airquality, Month == 5), points(Wind, Ozone, col = "blue"))
+###or
+
+with(airquality,plot(Wind, Ozone, main = "Ozone and Wind Quality", type = "n"))
+with(subset(airquality, Month ==5), points(Ozone, Wind, col = "blue"))
+with(subset(airquality, !Month ==5), points(Ozone, Wind, col = "Red"))
+legend("topright", pch = 1, col = c("blue, "red"), legend = c("May", "Other Months"))
+
+if you want multiple plots, use the mfrow function, and call the plot multiple times
+#////////////////////////////////
+
+xyplot(): for scatterplots
+bwlot: box and whiskers
+histogram
+stripplotg: box plot with actual points
+
+
+xyplot(y ~ x | f*g, data)
+
+
+lattice: xyplot, bwplot
